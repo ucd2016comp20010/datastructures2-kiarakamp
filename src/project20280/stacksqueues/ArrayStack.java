@@ -17,7 +17,7 @@ public class ArrayStack<E> implements Stack<E> {
     /**
      * Index of the top element of the stack in the array.
      */
-    private final int t = -1;                      // index of the top element in stack
+    private int t = -1;                      // index of the top element in stack
 
     /**
      * Constructs an empty stack using the default array capacity.
@@ -34,6 +34,7 @@ public class ArrayStack<E> implements Stack<E> {
     @SuppressWarnings({"unchecked"})
     public ArrayStack(int capacity) {        // constructs stack with given capacity
         // TODO
+        data = (E[]) new Object[capacity];
     }
 
     /**
@@ -65,6 +66,12 @@ public class ArrayStack<E> implements Stack<E> {
     @Override
     public void push(E e) {
         // TODO
+        if (t == data.length - 1) {
+            throw new StackOverflowError();
+        }
+
+        t++;
+        data[t] = e;
     }
 
     /**
@@ -75,7 +82,10 @@ public class ArrayStack<E> implements Stack<E> {
     @Override
     public E top() {
         // TODO
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        return data[t];
     }
 
     /**
@@ -86,7 +96,14 @@ public class ArrayStack<E> implements Stack<E> {
     @Override
     public E pop() {
         // TODO
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+
+        E e = data[t];
+        data[t] = null;
+        t--;
+        return e;
     }
 
     /**
@@ -105,6 +122,37 @@ public class ArrayStack<E> implements Stack<E> {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    static String convertToBase(long num, int base) {
+        if (num == 0) {
+            return "0";
+        }
+
+        ArrayStack<Integer> stack = new ArrayStack<>();
+
+        while (num > 0) {
+            int r = (int)(num % base);
+            stack.push(r);
+            num /= base;
+        }
+
+        String result = "";
+        while (!stack.isEmpty()) {
+            int digit = stack.pop();
+            if (digit < 10) {
+                result += digit; // 0-9
+            }
+            else {
+                result += (char) ('A' + digit - 10);  // 10 or greater
+            }
+        }
+
+        return result;
+    }
+
+    static String convertToBinary(long dec_num) {
+        return convertToBase(dec_num, 2);
     }
 
     /**
